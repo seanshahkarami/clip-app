@@ -11,3 +11,5 @@ python3 main.py
 
 # you'll be prompted to open your browser in just a moment
 ```
+
+![Screenshot from app](./app.png)
