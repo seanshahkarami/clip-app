@@ -9,25 +9,32 @@ This app perform zero-shot image classification using [OpenAI's CLIP](https://hu
 pip3 install --upgrade -r requirements.txt
 
 # run app with some sample text
-python3 main.py "a washing machine" "a person drinking water" "a red car" "a busy intersection"
+python3 main.py \
+    "a person drinking coffee" \
+    "a person making a call" \
+    "a person jogging" \
+    "a construction crew fixing the road" \
+    "a red sports car" \
+    "a busy intersection"
 ```
 
-This will open a camera stream and print the softmax and similarity scores of each text desciption for each frame.
+This will open a camera stream and print the similarity and softmax scores of each text desciption for each frame.
 
 ```txt
-0.022 18.801   a busy intersection 
-0.036 19.287   a red car 
-0.119 20.481   a washing machine 
-0.823 22.417   a person drinking water 
+12.499 0.000   a red sports car 
+16.413 0.001   a busy intersection 
+17.943 0.006   a construction crew fixing the road 
+20.251 0.065   a person jogging 
+21.546 0.237   a person making a call 
+22.612 0.690   a person drinking coffee 
 
-0.023 18.912   a busy intersection 
-0.034 19.280   a red car 
-0.129 20.616   a washing machine 
-0.814 22.457   a person drinking water 
-
-0.028 19.043   a red car 
-0.030 19.107   a busy intersection 
-0.099 20.299   a washing machine 
-0.842 22.434   a person drinking water 
+12.850 0.000   a red sports car 
+16.526 0.002   a busy intersection 
+17.970 0.007   a construction crew fixing the road 
+20.424 0.076   a person jogging 
+21.518 0.226   a person making a call 
+22.633 0.690   a person drinking coffee 
 ...
 ```
+
+_Note: I'm still working out the reasonable range for similarity scores. They do not seem to be [-1, 1] or [-100, 100] as I expected._
