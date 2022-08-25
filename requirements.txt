@@ -1,0 +1,4 @@
+pillow
+transformers
+torch
+pywaggle[vision]
