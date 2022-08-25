@@ -1,4 +1,5 @@
 import argparse
+import torch
 
 from transformers import CLIPProcessor, CLIPModel
 from waggle.plugin import Plugin
@@ -24,7 +25,8 @@ def main():
     with Plugin() as plugin, Camera(args.input) as camera:
         for snapshot in camera.stream():
             inputs = processor(text=args.text, images=snapshot.data, return_tensors="pt", padding=True)
-            outputs = model(**inputs)
+            with torch.no_grad():
+                outputs = model(**inputs)
             logits_per_image = outputs.logits_per_image # this is the image-text similarity score
             probs = logits_per_image.softmax(dim=1) # we can take the softmax to get the label probabilities
 
