@@ -8,9 +8,15 @@ from waggle.data.vision import Camera
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", default=0, help="input source")
-    parser.add_argument("--threshold", default=0.90, type=float, help="threshold for publishing a detection")
+    parser.add_argument("--threshold-type", default="similarity", choices=["similarity", "softmax"], help="which type of value to check threshold on")
+    parser.add_argument("--threshold", type=float, help="threshold for publishing a detection")
     parser.add_argument("text", nargs="+", help="list of text descriptions to match")
     args = parser.parse_args()
+
+    if args.threshold_type == "similarity" and args.threshold is None:
+        args.threshold = 28.0
+    elif args.threshold_type == "softmax" and args.threshold is None:
+        args.threshold = 0.90
 
     processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
     model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
@@ -23,14 +29,18 @@ def main():
             probs = logits_per_image.softmax(dim=1) # we can take the softmax to get the label probabilities
 
             for prob, logits, description in sorted(zip(probs.view(-1), logits_per_image.view(-1), args.text)):
-                # TODO use similarity score instead of text softmax for thresholding. currently will give unituitive
+                # TODO prefer similarity score to softmax prob for thresholding. software prob can give unituitive
                 # results - for example, when a single text is provided, that will always be published.
-                if prob > args.threshold:
-                    plugin.publish("image.clip.prediction", f"{description}:{prob:0.3f}:{logits:0.3f}", timestamp=snapshot.timestamp)
-                    marker = "*"
-                else:
-                    marker = " "
-                print(f"{prob:0.3f} {logits:0.3f} {marker} {description} ")
+                matched = (
+                    (args.threshold_type == "similarity" and logits > args.threshold) or
+                    (args.threshold_type == "softmax" and prob > args.threshold)
+                )
+
+                if matched:
+                    plugin.publish("image.clip.prediction", f"{description},{logits:0.3f},{prob:0.3f}", timestamp=snapshot.timestamp)
+                
+                marker = "*" if matched else " "
+                print(f"{logits:0.3f} {prob:0.3f} {marker} {description} ")
             print(flush=True)
 
 
