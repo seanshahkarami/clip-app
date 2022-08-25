@@ -37,4 +37,4 @@ This will open a camera stream and print the similarity and softmax scores of ea
 ...
 ```
 
-_Note: I'm still working out the reasonable range for similarity scores. They do not seem to be [-1, 1] or [-100, 100] as I expected._
+_Note: I'm still working out the range of similarity scores. They do not seem to be [-1, 1] or [-100, 100] as I expected._
