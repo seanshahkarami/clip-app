@@ -15,7 +15,7 @@ def similarity(image, text):
 
 demo = gr.Interface(
     title="CLIP Explorer",
-    description="Provides similarity scores for the input an image and lines of text.",
+    description="Input an image and lines of text then press submit to output the image-text similarity scores.",
     fn=similarity,
     inputs=["image", "text"],
     outputs="text",
