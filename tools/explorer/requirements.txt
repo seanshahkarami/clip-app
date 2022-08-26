@@ -2,3 +2,5 @@ gradio
 pillow
 transformers
 torch
+torchvision
+torchaudio

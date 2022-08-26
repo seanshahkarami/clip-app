@@ -1,4 +1,6 @@
 pillow
 transformers
 torch
+torchvision
+torchaudio
 pywaggle[vision]
