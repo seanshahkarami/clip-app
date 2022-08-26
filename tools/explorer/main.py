@@ -20,4 +20,6 @@ demo = gr.Interface(
     inputs=["image", "text"],
     outputs="text",
 )
-demo.launch()
+
+if __name__ == "__main__":
+    demo.launch()

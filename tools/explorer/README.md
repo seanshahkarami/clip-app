@@ -7,7 +7,7 @@ This is a [Gradio](https://gradio.app) app for quickly trying our similarity sco
 pip3 install --upgrade -r requirements.txt
 
 # run app
-python3 main.py
+gradio main.py
 
 # you'll be prompted to open your browser in just a moment
 ```
