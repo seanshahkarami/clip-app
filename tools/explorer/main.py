@@ -13,5 +13,11 @@ def similarity(image, text):
     similarities = outputs.logits_per_image.view(-1)
     return "\n".join(f"{line}: {similarity}" for line, similarity in zip(lines, similarities))
 
-demo = gr.Interface(fn=similarity, inputs=["image", "text"], outputs="text")
+demo = gr.Interface(
+    title="CLIP Explorer",
+    description="Provides similarity scores for the input an image and lines of text.",
+    fn=similarity,
+    inputs=["image", "text"],
+    outputs="text",
+)
 demo.launch()
