@@ -16,14 +16,8 @@ Now, you can provide an image and multiple lines of text to compute a similarity
 
 ![Screenshot from app](./app.png)
 
-If you'd like just run this live against your webcam, run the following instead:
+If you'd like to run this live using your webcam, simply run the `live.py` app instead:
 
 ```sh
-# install dependencies
-pip3 install --upgrade -r requirements.txt
-
-# run app
 gradio live.py
-
-# you'll be prompted to open your browser in just a moment
 ```
