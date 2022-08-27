@@ -25,8 +25,9 @@ demo = gr.Interface(
     title="CLIP Explorer",
     description="Input an image and lines of text then press submit to output the image-text similarity scores.",
     fn=similarity,
-    inputs=[gr.Image(label="Image"), gr.TextArea(label="Text descriptions"), gr.Checkbox(value=True, label="Order by similarity score?")],
+    inputs=[gr.Image(label="Webcam", source="webcam", streaming=True), gr.TextArea(label="Text descriptions"), gr.Checkbox(value=True, label="Order by similarity score?")],
     outputs=gr.TextArea(label="Image-text similarity scores"),
+    live=True,
 )
 
 if __name__ == "__main__":
