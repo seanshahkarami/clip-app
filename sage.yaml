@@ -1,0 +1,11 @@
+name: "clip-app"
+description: "This app perform zero-shot image classification using OpenAI's CLIP via the Hugging Face Transformers library."
+keywords: "camera, vision, image classification, text, nlp, zero-shot"
+authors: "Sean Shahkarami <sean.shahkarami@gmail.com>"
+collaborators: ""
+funding: ""
+license: ""
+homepage: "https://github.com/seanshahkarami/clip-app"
+source:
+  architectures:
+    - "linux/amd64"
