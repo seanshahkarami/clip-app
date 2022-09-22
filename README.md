@@ -40,3 +40,7 @@ This will open a camera stream and print the similarity and softmax scores of ea
 _Note: I'm still working out the range of similarity scores. They do not seem to be [-1, 1] or [-100, 100] as I expected._
 
 _The ease of which its possible to deploy is... interesting but very concerning..._
+
+## Additional Tools
+
+The [tools directory](./tools/) contains [additional tools](./tools/explorer/) for experimenting with labels on images and video.
