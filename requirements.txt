@@ -3,4 +3,4 @@ transformers
 torch
 torchvision
 torchaudio
-pywaggle[vision]
+pywaggle[vision]==0.55.*
