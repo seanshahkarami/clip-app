@@ -9,3 +9,4 @@ homepage: "https://github.com/seanshahkarami/clip-app"
 source:
   architectures:
     - "linux/amd64"
+    - "linux/arm64"
