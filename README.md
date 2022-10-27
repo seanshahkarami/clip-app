@@ -1,6 +1,10 @@
 # CLIP App
 
-This app perform zero-shot image classification using [OpenAI's CLIP](https://huggingface.co/docs/transformers/model_doc/clip) hosted by [Hugging Face](https://huggingface.co).
+This app perform zero-shot image classification using [OpenAI's CLIP](https://huggingface.co/openai/clip-vit-base-patch32) hosted by [Hugging Face](https://huggingface.co).
+
+## Model Use
+
+Please read the [Model Use](https://huggingface.co/openai/clip-vit-base-patch32#model-use) and evaluate if your use case fits before deploying this model.
 
 ## Usage
 
