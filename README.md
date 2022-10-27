@@ -4,7 +4,7 @@ This app perform zero-shot image classification using [OpenAI's CLIP](https://hu
 
 ## Intended Model Use
 
-Please read the [Model Use](https://huggingface.co/openai/clip-vit-base-patch32#model-use) and evaluate if your use case fits before deploying this model.
+Please read the [Model Use](https://huggingface.co/openai/clip-vit-base-patch32#model-use) section and evaluate if your use case fits before deploying this model.
 
 ## Usage
 
