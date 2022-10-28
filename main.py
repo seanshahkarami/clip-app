@@ -18,8 +18,8 @@ def main():
     elif args.threshold_type == "softmax" and args.threshold is None:
         args.threshold = 0.90
 
-    processor = CLIPProcessor.from_pretrained("openai/clip-vit-base-patch32")
-    model = CLIPModel.from_pretrained("openai/clip-vit-base-patch32")
+    processor = CLIPProcessor.from_pretrained("./openai-clip-vit-base-patch32/")
+    model = CLIPModel.from_pretrained("./openai-clip-vit-base-patch32/")
 
     camera = Camera(args.input)
 
