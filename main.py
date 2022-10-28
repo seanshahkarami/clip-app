@@ -26,7 +26,7 @@ def main():
         args.threshold = 0.90
 
     device = "cuda" if torch.cuda.is_available() else "cpu"
-    logging.info("using device: %s", device)
+    logging.info("using device %s", device)
 
     logging.info("loading models...")
     processor = CLIPProcessor.from_pretrained("./openai-clip-vit-base-patch32/")
