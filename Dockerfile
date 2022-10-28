@@ -10,9 +10,7 @@ RUN wget https://web.lcrc.anl.gov/public/waggle/models/seanshahkarami/openai-cli
 
 # install deps
 COPY requirements.txt .
-RUN pip3 install --no-cache-dir -r requirements.txt && \
-    pip3 install --no-cache-dir --force-reinstall opencv-python-headless
-#   ^ this is a hack to replace the "gui" version of opencv pulled in as a dep with headless again
+RUN pip3 install --no-cache-dir -r requirements.txt
 
 COPY main.py .
 ENTRYPOINT ["python3", "main.py"]
