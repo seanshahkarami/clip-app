@@ -1,5 +1,5 @@
 pillow
-transformers==4.18.0
+transformers
 torch
 torchvision
 torchaudio
