@@ -18,7 +18,7 @@ def main():
     logging.basicConfig(
         level=logging.DEBUG if args.debug else logging.INFO,
         format="%(asctime)s %(message)s",
-        datefmt="%Y/%m/%d %H:%M:%S")
+        datefmt="%Y/%m/%d %H:%M:%S.%f")
 
     if args.threshold_type == "similarity" and args.threshold is None:
         args.threshold = 28.0
