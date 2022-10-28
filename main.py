@@ -31,11 +31,13 @@ def main():
     logging.info("loading models...")
     processor = CLIPProcessor.from_pretrained("./openai-clip-vit-base-patch32/")
     model = CLIPModel.from_pretrained("./openai-clip-vit-base-patch32/").to(device)
-    logging.info("done loading models!")
+    logging.info("done loading models")
 
     with Plugin() as plugin, Camera(args.input) as camera:
         logging.info("processing stream...")
         for snapshot in camera.stream():
+
+            logging.info("starting inference...")
             inputs = processor(text=args.text, images=snapshot.data, return_tensors="pt", padding=True).to(device)
             with torch.no_grad():
                 outputs = model(**inputs)
@@ -58,7 +60,7 @@ def main():
                 marker = "*" if matched else " "
                 results.append(f"{logits:0.3f} {prob:0.3f} {marker} {description}")
 
-            logging.info("inference results:\n%s\n", "\n".join(results))
+            logging.info("inference results are\n%s\n", "\n".join(results))
 
 
 if __name__ == "__main__":
