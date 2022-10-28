@@ -58,7 +58,7 @@ def main():
                 marker = "*" if matched else " "
                 results.append(f"{logits:0.3f} {prob:0.3f} {marker} {description}")
 
-            logging.info("inference results:\n%s\n\n", "\n".join(results))
+            logging.info("inference results:\n%s\n", "\n".join(results))
 
 
 if __name__ == "__main__":
