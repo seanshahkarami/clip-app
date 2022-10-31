@@ -9,6 +9,7 @@ from waggle.data.vision import Camera
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", action="store_true", help="enable debug logging")
+    parser.add_argument("--cpu", action="store_true", help="use cpu instead of accelerator")
     parser.add_argument("--input", default=0, help="input source")
     parser.add_argument("--threshold-type", default="similarity", choices=["similarity", "softmax"], help="which type of value to check threshold on")
     parser.add_argument("--threshold", type=float, help="threshold for publishing a detection")
@@ -25,7 +26,7 @@ def main():
     elif args.threshold_type == "softmax" and args.threshold is None:
         args.threshold = 0.90
 
-    device = "cuda" if torch.cuda.is_available() else "cpu"
+    device = "cuda" if torch.cuda.is_available() and not args.cpu else "cpu"
     logging.info("using device %s", device)
 
     logging.info("loading models...")
