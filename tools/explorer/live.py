@@ -30,7 +30,7 @@ def similarity(image, text, threshold, order):
         "pluginctl",
         "run",
         "--name", "clip-app",
-        "waggle/clip-app:0.9.1",
+        "waggle/clip-app:0.10.0",
         "--",
         "--input=bottom",
         f"--threshold={threshold}",
