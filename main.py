@@ -39,7 +39,7 @@ class TextPromptWatcher:
 
 class RateLimiter:
 
-    def __init__(self, interval):
+    def __init__(self):
         self.time = time.monotonic()
 
     def aquire(self):
