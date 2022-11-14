@@ -7,6 +7,7 @@ import time
 from transformers import CLIPProcessor, CLIPModel
 from waggle.plugin import Plugin
 from waggle.data.vision import Camera
+from collections import defaultdict
 
 
 class TextPromptWatcher:
@@ -36,10 +37,24 @@ class TextPromptWatcher:
             time.sleep(self.poll_url_interval)
 
 
+class RateLimiter:
+
+    def __init__(self, interval):
+        self.time = time.monotonic()
+
+    def aquire(self):
+        now = time.monotonic()
+        if now - self.time < 1.0:
+            return False
+        self.time = now
+        return True
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--debug", action="store_true", help="enable debug logging")
     parser.add_argument("--cpu", action="store_true", help="use cpu instead of accelerator")
+    parser.add_argument("--retry-stream", action="store_true", help="always retry the video stream")
     parser.add_argument("--input", default=0, help="input source")
     parser.add_argument("--threshold-type", default="similarity", choices=["similarity", "softmax"], help="which type of value to check threshold on")
     parser.add_argument("--threshold", type=float, help="threshold for publishing a detection")
@@ -70,36 +85,46 @@ def main():
     if args.watch_text_url is not None:
         Thread(target=text_prompt_watcher.watch_url, args=(args.watch_text_url,), daemon=True).start()
 
-    with Plugin() as plugin, Camera(args.input) as camera:
-        logging.info("processing stream...")
-        for snapshot in camera.stream():
-            # get latest cached text prompts
-            text_prompts = text_prompt_watcher.get_text_prompts()
+    # NOTE makes no attempt to garbage collect these. assuming number of prompts won't get crazy high.
+    rate_limiters = defaultdict(RateLimiter)
 
-            logging.info("running inference...")
-            inputs = processor(text=text_prompts, images=snapshot.data, return_tensors="pt", padding=True).to(device)
-            with torch.no_grad():
-                outputs = model(**inputs)
-            logits_per_image = outputs.logits_per_image # this is the image-text similarity score
-            probs = logits_per_image.softmax(dim=1) # we can take the softmax to get the label probabilities
+    with Plugin() as plugin:
+        while True:
+            with Camera(args.input) as camera:
+                logging.info("processing stream...")
+                for snapshot in camera.stream():
+                    # get latest cached text prompts
+                    text_prompts = text_prompt_watcher.get_text_prompts()
 
-            results = []
+                    logging.info("running inference...")
+                    inputs = processor(text=text_prompts, images=snapshot.data, return_tensors="pt", padding=True).to(device)
+                    with torch.no_grad():
+                        outputs = model(**inputs)
+                    logits_per_image = outputs.logits_per_image # this is the image-text similarity score
+                    probs = logits_per_image.softmax(dim=1) # we can take the softmax to get the label probabilities
 
-            for prob, logits, description in sorted(zip(probs.view(-1), logits_per_image.view(-1), text_prompts)):
-                # TODO prefer similarity score to softmax prob for thresholding. software prob can give unituitive
-                # results - for example, when a single text is provided, that will always be published.
-                matched = (
-                    (args.threshold_type == "similarity" and logits > args.threshold) or
-                    (args.threshold_type == "softmax" and prob > args.threshold)
-                )
+                    results = []
 
-                if matched:
-                    plugin.publish("image.clip.prediction", f"{description},{logits:0.3f},{prob:0.3f}", timestamp=snapshot.timestamp)
+                    for prob, logits, description in sorted(zip(probs.view(-1), logits_per_image.view(-1), text_prompts)):
+                        # TODO prefer similarity score to softmax prob for thresholding. software prob can give unituitive
+                        # results - for example, when a single text is provided, that will always be published.
+                        matched = (
+                            (args.threshold_type == "similarity" and logits > args.threshold) or
+                            (args.threshold_type == "softmax" and prob > args.threshold)
+                        )
 
-                marker = "*" if matched else " "
-                results.append(f"{logits:0.3f} {prob:0.3f} {marker} {description}")
+                        if matched and rate_limiters[description].aquire():
+                            plugin.publish("image.clip.prediction", f"{description},{logits:0.3f},{prob:0.3f}", timestamp=snapshot.timestamp)
 
-            logging.info("inference results are\n\n%s\n", "\n".join(results))
+                        marker = "*" if matched else " "
+                        results.append(f"{logits:0.3f} {prob:0.3f} {marker} {description}")
+
+                    logging.info("inference results are\n\n%s\n", "\n".join(results))
+
+            if not args.retry_stream:
+                break
+
+            time.sleep(3)
 
 
 if __name__ == "__main__":
